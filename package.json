@@ -4,7 +4,7 @@
   "description": "realtime chat over bitcoin",
   "main": "index.js",
   "scripts": {
-    "start": "npm install; node env; node index"
+    "start": "npm install && node env && node index"
   },
   "bin": "index.js",
   "author": "",
@@ -17,6 +17,7 @@
     "eventsource": "^1.0.7",
     "figlet": "^1.2.1",
     "inquirer": "^6.2.1",
+    "local-web-server": "^2.6.1",
     "moment": "^2.24.0",
     "node-notifier": "^5.3.0"
   }
