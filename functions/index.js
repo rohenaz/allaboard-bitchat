@@ -61,6 +61,5 @@ const requestWrap = (req, path) => {
       if (req.method === 'POST') {
         options.form = req.body
       }
-      console.log('using options', options)
     return rp(options)
 }
