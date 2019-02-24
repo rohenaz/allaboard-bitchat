@@ -1,6 +1,6 @@
 # Bitchat
 
-> Realtime chat over Bitcoin.
+> Realtime chat over Bitcoin, modified to run on the All Aboard API.
 
 ![c2b](c2b.gif)
 
@@ -8,7 +8,7 @@ Powered by:
 
 1. **[Bitdb](https://bitdb.network):** For reading OP_RETURN messages from Bitcoin SV
 2. **[Bitsocket](https://www.bitsocket.org):** For subscribing to OP_RETURN messages from Bitcoin SV
-3. **[Bitpipe](https://github.com/unwriter/bitpipe#2-light-node):** A Bitpipe Light node For broadcasting transactions.
+3. **[Allaboard](https://allaboard.cash/):** A onboarding & faucet bot API for Bitcoin SV.
 
 Uses the Bitcoin SV blockchain.
 
