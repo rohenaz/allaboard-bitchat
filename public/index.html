@@ -145,7 +145,6 @@
   </script>
   <script>
   var ADDR = "1GYZ4qt5RPhhjDUH2xtWH772n38hqCU3iC"
-  var faucetKey = "teRHI7ikFihd9ZkLLDBhgFrR3cuDpJxb2T"
   var protocol = "1CfUB3C5Mwa2Toi7r9tgvQCCe4cjjLmc1B"
 
   var isMobile = (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1)
@@ -247,18 +246,16 @@
         i.setAttribute("readonly", "readonly")
 
         let params = {
-          data :`["`+ protocol +`", "`+ message +`"]`,
-          key: faucetKey
+          data :`["`+ protocol +`", "`+ message +`"]`
         }
 
         const searchParams = Object.keys(params).map((key) => {
           return encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
         }).join('&')
 
-        fetch(apiUrl + '/faucet/push', {
+        fetch(apiUrl + '/push', {
           method: 'POST',
           headers: {
-            'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           credentials: 'omit',
@@ -448,11 +445,10 @@
   }
 
   var updateStatus = function() {
-    return fetch(apiUrl + '/faucet/status', {
+    return fetch(apiUrl + '/status', {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
-        'key': faucetKey
+        'Accept': 'application/json'
       },
       'credentials': 'omit'
     }).then(function(res) {
