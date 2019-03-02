@@ -1,6 +1,6 @@
 {
   "name": "bitchat-functions",
-  "description": "Cloud Functions for All Aboard Bitchat demo",
+  "description": "Firebase Functions to proxy the AllAboard api with a faucet key.",
   "scripts": {
     "lint": "eslint .",
     "serve": "firebase serve --only functions",
