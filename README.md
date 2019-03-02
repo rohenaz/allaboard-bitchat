@@ -3,6 +3,8 @@ Example live Bitcoin chat web application using [BitChat](https://github.com/unw
 
 ![License](https://img.shields.io/github/license/rohenaz/allaboard-bitchat.svg?style=flat)  [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat)](https://github.com/RichardLitt/standard-readme)
 
+[![Screenshot](https://bitchat.bitdb.network/screen.png)](https://bitchat.allaboard.cash)
+
 ## Table of Contents
 - [Installation](https://github.com/rohenaz/allaboard-bitchat#installation)
 - [Documentation](https://github.com/rohenaz/allaboard-bitchat#documentation)
