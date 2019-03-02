@@ -1,0 +1,109 @@
+.row {
+    padding: 8px 0;
+}
+.row .m {
+    flex-grow: 1;
+}
+.row .t {
+    color: rgba(255,255,255,0.3);
+    text-shadow: none;
+    text-decoration: none;
+    font-size: 10px;
+}
+.row .t:hover {
+    text-decoration: underline;
+}
+html {
+    background: url(https://bitchat.bitdb.network/background.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+body {
+    text-shadow: 0 0.2rem 1rem #0c7b46;
+    color: #62cf72;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: Menlo, monaco, Courier, serif;
+    font-size: 12px;
+}
+.pre {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    white-space: pre;
+}
+a {
+    display: inline !important;
+    color: #62cf72;
+    font-weight: bold;
+}
+.container {
+    flex-grow: 1;
+    padding: 20px 20px 0;
+    min-height: 0;
+    overflow: auto;
+}
+.input {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+.input input[type=text] {
+    font-family: Menlo, monaco, Courier, serif;
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    background: none;
+    color: #62cf72;
+}
+.input input[type=text]::placeholder {
+    font-family: Menlo, monaco, Courier, serif;
+    color: #62cf72;
+}
+.input input[type=text]:focus {
+    outline: none;
+}
+.input input[type=submit] {
+    font-family: Menlo, monaco, Courier, serif;
+    background: none;
+    border: 1px solid #62cf72;
+    opacity: 0.5;
+    text-shadow: 0 0.2rem 1rem #0c7b46;
+    color: #62cf72;
+    border-radius: 0;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100px;
+    padding: 11px;
+}
+.row i {
+    margin-right: 5px;
+}
+i.fa-bitcoin {
+    font-size: 14px;
+}
+#qr {
+    display: block;
+}
+#qr img {
+    position: relative;
+    display: block;
+}
+#qr img:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transition: all .3s linear;
+    background: rgba(0,255,0, 0.5);
+}
+.refill > * {
+    margin-bottom: 10px;
+}
