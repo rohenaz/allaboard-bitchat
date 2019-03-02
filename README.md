@@ -1,71 +1,121 @@
-# Bitchat
+# All Aboard: Bitchat [Demo Application](https://bitchat.allaboard.cash)
+Example live Bitcoin chat web application using [BitChat](https://github.com/unwriter/bitchat) funded via the [AllAboard Faucet API](https://allaboard.cash/docs). This example uses [Firebase](https://firebase.google.com) for the demo [static webpage](https://firebase.google.com/docs/hosting/) and demo serverless [cloud functions](https://firebase.google.com/docs/functions/).
 
-> Realtime chat over Bitcoin, modified to run on the All Aboard API.
+![License](https://img.shields.io/github/license/rohenaz/allaboard-bitchat.svg?style=flat)  [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat)](https://github.com/RichardLitt/standard-readme)
 
-![c2b](c2b.gif)
+## Table of Contents
+- [Installation](https://github.com/rohenaz/allaboard-bitchat#installation)
+- [Documentation](https://github.com/rohenaz/allaboard-bitchat#documentation)
+- [Examples](https://github.com/rohenaz/allaboard-bitchat#examples)
+- [Code Standards](https://github.com/rohenaz/allaboard-bitchat#code-standards)
+- [Usage](https://github.com/rohenaz/allaboard-bitchat#usage)
+- [Maintainers](https://github.com/rohenaz/allaboard-bitchat#maintainers)
+- [Contributing](https://github.com/rohenaz/allaboard-bitchat#contributing)
+- [License](https://github.com/rohenaz/allaboard-bitchat#license)
 
-Powered by:
+## Installation
 
-1. **[Bitdb](https://bitdb.network):** For reading OP_RETURN messages from Bitcoin SV
-2. **[Bitsocket](https://www.bitsocket.org):** For subscribing to OP_RETURN messages from Bitcoin SV
-3. **[Allaboard](https://allaboard.cash/):** A onboarding & faucet bot API for Bitcoin SV.
+#### Using Firebase (fastest)
+Checkout the [quickstart](https://firebase.google.com/docs/hosting/quickstart) for Firebase and if you want to run the serverless functions locally checkout the [Firebase local emulator](https://firebase.google.com/docs/functions/local-emulator).
 
-Uses the Bitcoin SV blockchain.
+1) Use your [Google Firebase account](https://console.firebase.google.com/) and **create a new project** in Firebase
 
-# Key Management
+2) **Turn on the Blaze plan**, aka "Pay as You Go" in the billing section (required to make external cloud function requests)
 
-This package includes key management by default.
+3) **Install the [Firebase CLI](https://firebase.google.com/docs/hosting/quickstart#install_the_firebase_cli)**
 
-When you run `npm start`, it will ask you for a private key.
+4) **Login to Firebase** (opens a web browser to login to Google)
+```bash
+$ firebase login
 
-This will be stored in a private `.env` file and used for sessions to send transactions.
-
-Unlike the web version, this terminal version uses YOUR KEY to send transactions.
-
-# How to Use
-
-## Step 1. Download the code
-
-```
-git clone https://github.com/unwriter/bitchat.git
-```
-
-(or just download the [zip file](https://github.com/unwriter/bitchat/archive/master.zip))
-
-## Step 2. Run
-
-Open your terminal and go to the bitchat folder. Then run:
-
-```
-npm start
+ ? Allow Firebase to collect anonymous CLI usage and error reporting information? No
 ```
 
-And that's it!
+5) **Initialize the project** from inside your project directory.
+```bash
+$ cd /Users/YourName/projects/my-demo-bitchat
+$ firebase init
+```
 
-It will ask you to enter your WIF private key the first time, which will be stored LOCALLY in your `.env` file (it's a hidden file).
+Choose these settings to host a static website with serverless Cloud Functions
+```
+ * You are initializing in an existing Firebase project directory
+  
+? Which Firebase CLI features do you want to setup for this folder?
+❯ ◉ Functions: Configure and deploy Cloud Functions
+❯ ◉ Hosting: Configure and deploy Firebase Hosting sites
+ 
+? What language would you like to use to write Cloud Functions? JavaScript
 
-# See in Action
+? Do you want to use ESLint to catch probable bugs and enforce style? Yes
 
-## 1. Terminal to Browser
+? File functions/package.json already exists. Overwrite? No
 
-You can send from terminal to browser
+? File functions/.eslintrc.json already exists. Overwrite? No
 
-![c2b](c2b.gif)
+? File functions/index.js already exists. Overwrite? No
 
-## 2. Terminal to Terminal
+? Do you want to install dependencies with npm now? Yes
 
-Bitchat terminal edition ships with native push notification for its parent OS. So you'll get a push notification when there's a new message.
+? What do you want to use as your public directory? public
 
-![c2c](c2c.gif)
+? Configure as a single-page app (rewrite all urls to /index.html)? Yes
 
-## 3. Browser to Terminal
+? File public/index.html already exists. Overwrite? No
+```
 
-Too lazy to do a demo for this one. But it works.
+6) Go to [AllAboard](https://allaboard.cash) and **generate a new [Faucet API key](https://allaboard.cash/docs)**.
 
----
+7) **Set an environment variable** in Cloud Functions for the above Faucet API key
+```bash 
+$ firebase functions:config:set allaboard.key="YOUR_FAUCET_KEY"
+```
 
-# Internal
+8) **Deploy the code** and functions (takes a few minutes the first time)
+```bash
+$ firebase use Your-Firebase-Project-ID
+$ firebase deploy
+```
 
-Internally it's powered by a [Bitpipe Light node](https://github.com/unwriter/bitpipe#2-light-node), which lets you post to Bitcoin even withoout a Bitcoin node.
+#### Testing Firebase Deployment
+- First, test that the website deployed by opening a web browser and navigating to the url:
+```
+https://Your-Firebase-Project-ID.firebaseapp.com/
+```
 
-Which means, anyone can run this.
+- Second, test your cloud function to see it returns the desired response (address, balance):
+```bash
+$ curl -X GET https://us-central1-Your-Firebase-Project-ID.cloudfunctions.net/status
+
+{"address":"14U9TLN3u9ncW2YQQJCMThBoB9XNigBDvN","balance":0}
+```
+
+## Documentation
+- More information about the AllAboard Faucet API can be [found here](https://allaboard.cash/docs).
+- **[Bitchat](https://github.com/unwriter/bitchat):** Massively Multiplayer Decentralized Realtime chat over Bitcoin.
+- **[Bitdb](https://bitdb.network):** For reading OP_RETURN messages from Bitcoin SV
+- **[Bitsocket](https://www.bitsocket.org):** For subscribing to OP_RETURN messages from Bitcoin SV
+
+## Examples
+- View the [live bitchat demo application](https://bitchat.allaboard.cash)
+
+## Code Standards
+- Always use the language's best practices
+- For the serverless cloud functions we follow the [ESLint rules](https://github.com/rohenaz/allaboard-bitchat/blob/master/functions/.eslintrc.json).
+
+## Usage
+- Use this [current demo](https://bitchat.allaboard.cash) to create a cloud based web application in minutes
+- Setup your own custom application using the [AllAboard API](https://allaboard.cash/docs)
+
+## Maintainers
+[Satchmo](https://github.com/rohenaz) - [MrZ](https://github.com/mrz1836)
+
+Support the development of this project and the [AllAboard](https://allaboard.cash) team 🙏
+
+[![Donate](https://img.shields.io/badge/donate-bitcoin%20SV-brightgreen.svg)](https://allaboard.cash/?af=allaboard-bitchat)
+
+## Contributing
+Feel free to dive in! [Open an issue](https://github.com/rohenaz/allaboard-bitchat/issues/new) or submit PRs.
+
+## License
+![License](https://img.shields.io/github/license/rohenaz/allaboard-bitchat.svg?style=flat)
