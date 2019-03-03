@@ -1,7 +1,7 @@
 # All Aboard: Bitchat [Demo Application](https://bitchat.allaboard.cash)
 Example live Bitcoin chat web application using [BitChat](https://github.com/unwriter/bitchat) funded via the [AllAboard Faucet API](https://allaboard.cash/docs). This example uses [Firebase](https://firebase.google.com) for the demo [static webpage](https://firebase.google.com/docs/hosting/) and demo serverless [cloud functions](https://firebase.google.com/docs/functions/).
 
-![License](https://img.shields.io/github/license/rohenaz/allaboard-bitchat.svg?style=flat)  [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat)](https://github.com/RichardLitt/standard-readme)  [![app health](https://img.shields.io/website-up-down-green-red/https/bitchat.allaboard.cash.svg?label=app%20health)](https://bitchat.allaboard.cash)
+![License](https://img.shields.io/github/license/rohenaz/allaboard-bitchat.svg?style=flat)  [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat)](https://github.com/RichardLitt/standard-readme)  [![app health](https://img.shields.io/website-up-down-green-red/https/bitchat.allaboard.cash.svg?label=status)](https://bitchat.allaboard.cash)
 
 [![Screenshot](https://bitchat.bitdb.network/screen.png)](https://bitchat.allaboard.cash)
 
