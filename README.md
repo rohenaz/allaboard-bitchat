@@ -69,7 +69,7 @@ Choose these settings to host a static website with serverless Cloud Functions
 ? File public/index.html already exists. Overwrite? No
 ```
 
-6) Go to [AllAboard](https://allaboard.cash) and **generate a new [Faucet API key](https://allaboard.cash/docs)**.
+6) Go to All Aboard and **generate a new [Faucet API key](https://allaboard.cash/docs/#/faucet/post_faucet_create)**.
 
 7) **Set an environment variable** in Cloud Functions for the above Faucet API key
 ```bash 
