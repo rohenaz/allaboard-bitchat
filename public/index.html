@@ -1,47 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-      <title>Bitchat - Funded by AllAboard Faucet - Demo</title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:creator" content="@wildsatchmo" />
-      <meta name="twitter:title" content="Bitchat Demo" />
-      <meta name="twitter:description" content="A realtime chatroom over Bitcoin funded by AllAboard Faucet Demo" />
-      <meta name="twitter:image" content="https://bitchat.bitdb.network/screen.png" />
-      <meta property="og:url" content="https://bitchat.allaboard.cash" />
-      <meta property="og:type"   content="website" />
-      <meta property="og:title" content="Bitchat Demo" />
-      <meta property="og:description" content="A realtime chatroom over Bitcoin funded by AllAboard Faucet Demo" />
-      <meta property="og:image" content="https://bitchat.bitdb.network/screen.png" />
-      <link rel="stylesheet" href="css/app.css" />
-      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/figlet@1.2.1/lib/figlet.min.js"></script>
-      <script src="https://www.moneybutton.com/moneybutton.js"></script>
-      <script id="tpl" type="text/x-handlebars-template">
-        {{#each r}}
-          <div class='row'>
-            <div class='m'>{{m}}</div>
-            <a target="_blank" href="https://whatsonchain.com/tx/{{h}}" class='t'>{{timestamp}} <i class='fab fa-bitcoin'></i><i class='fas fa-angle-double-right'></i></a>
-          </div>
-        {{/each}}
-      </script>
-      <script id="tpl2" type="text/x-handlebars-template">
-        <div class='m'>{{m}}</div>
-        <a target="_blank" href="https://whatsonchain.com/tx/{{h}}" class='t'>{{timestamp}} <i class='fab fa-bitcoin'></i><i class='fas fa-angle-double-right'></i></a>
-      </script>
-      <script type="application/javascript" src="js/app.js"></script>
-  </head>
-  <body>
-  <div class='container'>
-  </div>
-  <form class='input'>
-    <div>$</div>
-    <input autofocus name='chat' id='chat' type='text' placeholder='' autocomplete='off'>
-    <input type='submit' value="Post">
-  </form>
-  </body>
-  </html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Bitchat - Funded by AllAboard Faucet - Demo</title>
+  <meta name="keywords" content="bitchat, realtime, bitcoin, faucet, demo, chat, all aboard">
+  <meta name="description" content="A realtime chatroom over Bitcoin funded by AllAboard Faucet Demo">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:creator" content="@wildsatchmo"/>
+  <meta name="twitter:title" content="Bitchat Demo"/>
+  <meta name="twitter:description" content="A realtime chatroom over Bitcoin funded by AllAboard Faucet Demo"/>
+  <meta name="twitter:image" content="https://bitchat.bitdb.network/screen.png"/>
+  <meta property="og:url" content="https://bitchat.allaboard.cash"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Bitchat Demo"/>
+  <meta property="og:description" content="A realtime chatroom over Bitcoin funded by AllAboard Faucet Demo"/>
+  <meta property="og:image" content="https://bitchat.bitdb.network/screen.png"/>
+  <link rel="stylesheet" href="css/app.css"/>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/figlet@1.2.1/lib/figlet.min.js"></script>
+  <script src="https://www.moneybutton.com/moneybutton.js"></script>
+  <script id="tpl" type="text/x-handlebars-template">
+    {{#each r}}
+    <div class='row'>
+      <div class='m'>{{m}}</div>
+      <a target="_blank" href="https://whatsonchain.com/tx/{{h}}" class='t'>{{timestamp}} <i class='fab fa-bitcoin'></i><i
+          class='fas fa-angle-double-right'></i></a>
+    </div>
+    {{/each}}
+  </script>
+  <script id="tpl2" type="text/x-handlebars-template">
+    <div class='m'>{{m}}</div>
+    <a target="_blank" href="https://whatsonchain.com/tx/{{h}}" class='t'>{{timestamp}} <i class='fab fa-bitcoin'></i><i
+        class='fas fa-angle-double-right'></i></a>
+  </script>
+  <script type="application/javascript" src="js/app.js"></script>
+</head>
+<body>
+<div class='container'>
+</div>
+<form class='input'>
+  <div>$</div>
+  <input autofocus name='chat' id='chat' type='text' placeholder='' autocomplete='off'>
+  <input type='submit' value="Post">
+</form>
+</body>
+</html>
   
