@@ -2,7 +2,7 @@
 Example live Bitcoin chat web application using [BitChat](https://github.com/unwriter/bitchat) funded via the [AllAboard Faucet API](https://allaboard.cash/docs). This example uses [Firebase](https://firebase.google.com) for the demo [static webpage](https://firebase.google.com/docs/hosting/) and demo serverless [cloud functions](https://firebase.google.com/docs/functions/).
 
 ![last commit](https://img.shields.io/github/last-commit/rohenaz/allaboard-bitchat.svg)
-![license](https://img.shields.io/github/license/rohenaz/allaboard-bitchat.svg?style=flat)
+[![license](https://img.shields.io/badge/license-Open%20BSV-brightgreen.svg?style=flat)](/LICENSE)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat)](https://github.com/RichardLitt/standard-readme)
 [![app health](https://img.shields.io/website-up-down-green-red/https/bitchat.allaboard.cash.svg?label=status)](https://bitchat.allaboard.cash)
 
@@ -123,4 +123,4 @@ Support the development of this project and the [AllAboard](https://allaboard.ca
 Feel free to dive in! [Open an issue](https://github.com/rohenaz/allaboard-bitchat/issues/new) or submit PRs.
 
 ## License
-![License](https://img.shields.io/github/license/rohenaz/allaboard-bitchat.svg?style=flat)
+[![License](https://img.shields.io/badge/license-Open%20BSV-brightgreen.svg?style=flat)](/LICENSE)
