@@ -32,7 +32,7 @@ var sock = {
 }
 var balance
 var apiUrl = 'https://us-central1-bitchat-9926b.cloudfunctions.net'
-var audio = new Audio("https://bitchat.bitdb.network/newmessage.mp3")
+//var audio = new Audio("https://bitchat.bitdb.network/newmessage.mp3")
 var query_b64 = btoa(JSON.stringify(query))
 var sock_b64 = btoa(JSON.stringify(sock))
 var query_url = 'https://chronos.bitdb.network/q/1P6o45vqLdo6X8HRCZk8XuDsniURmXqiXo/'+query_b64
@@ -40,7 +40,7 @@ var socket_url = 'https://chronos.bitdb.network/s/1P6o45vqLdo6X8HRCZk8XuDsniURmX
 var bitsocket
 
 //Load audio
-audio.load()
+//audio.load()
 
 // template
 document.addEventListener("DOMContentLoaded", function(e) {
@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
     var data = res.data[0]
     console.log(res)
     if (res.type === 't') {
-      audio.play()
+      //audio.play()
       var i = document.querySelector("#chat")
       i.setAttribute("placeholder", "")
       i.removeAttribute("readonly")
@@ -211,7 +211,7 @@ var refill = function() {
       })
       document.querySelector(".container").scrollTop = 100000000
     }, 500)
-    audio.play()
+    //audio.play()
   })
 }
 

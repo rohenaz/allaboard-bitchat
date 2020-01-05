@@ -14,7 +14,7 @@
     text-decoration: underline;
 }
 html {
-    background: url(https://bitchat.bitdb.network/background.png) no-repeat center center fixed;
+    background: #000;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
