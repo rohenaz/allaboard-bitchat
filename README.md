@@ -1,12 +1,12 @@
-# All Aboard: Bitchat [Demo Application](https://bitchat.allaboard.cash)
-Example live Bitcoin chat web application using [BitChat](https://github.com/unwriter/bitchat) funded via the [AllAboard Faucet API](https://allaboard.cash/docs). This example uses [Firebase](https://firebase.google.com) for the demo [static webpage](https://firebase.google.com/docs/hosting/) and demo serverless [cloud functions](https://firebase.google.com/docs/functions/).
+# All Aboard: Bitchat [Demo Application](https://bitchat.allaboardbitcoin.com)
+Example live Bitcoin chat web application using [BitChat](https://github.com/unwriter/bitchat) funded via the [AllAboard Faucet API](https://allaboardbitcoin.com/docs). This example uses [Firebase](https://firebase.google.com) for the demo [static webpage](https://firebase.google.com/docs/hosting/) and demo serverless [cloud functions](https://firebase.google.com/docs/functions/).
 
 ![last commit](https://img.shields.io/github/last-commit/rohenaz/allaboard-bitchat.svg)
 [![license](https://img.shields.io/badge/license-Open%20BSV-brightgreen.svg?style=flat)](/LICENSE)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat)](https://github.com/RichardLitt/standard-readme)
-[![app health](https://img.shields.io/website-up-down-green-red/https/bitchat.allaboard.cash.svg?label=status)](https://bitchat.allaboard.cash)
+[![app health](https://img.shields.io/website-up-down-green-red/https/bitchat.allaboardbitcoin.com.svg?label=status)](https://bitchat.allaboardbitcoin.com)
 
-[![Screenshot](https://bitchat.bitdb.network/screen.png)](https://bitchat.allaboard.cash)
+[![Screenshot](https://bitchat.bitdb.network/screen.png)](https://bitchat.allaboardbitcoin.com)
 
 ## Table of Contents
 - [Installation](https://github.com/rohenaz/allaboard-bitchat#installation)
@@ -69,7 +69,7 @@ Choose these settings to host a static website with serverless Cloud Functions
 ? File public/index.html already exists. Overwrite? No
 ```
 
-6) Go to All Aboard and **generate a new [Faucet API key](https://allaboard.cash/docs/#/faucet/post_faucet_create)**.
+6) Go to All Aboard and **generate a new [Faucet API key](https://allaboardbitcoin.com/docs/#/faucet/post_faucet_create)**.
 
 7) **Set an environment variable** in Cloud Functions for the above Faucet API key
 ```bash 
@@ -96,28 +96,28 @@ $ curl -X GET https://us-central1-Your-Firebase-Project-ID.cloudfunctions.net/st
 ```
 
 ## Documentation
-- More information about the AllAboard Faucet API can be [found here](https://allaboard.cash/docs).
+- More information about the AllAboard Faucet API can be [found here](https://allaboardbitcoin.com/docs).
 - **[Bitchat](https://github.com/unwriter/bitchat):** Massively Multiplayer Decentralized Realtime chat over Bitcoin.
 - **[Bitdb](https://bitdb.network):** For reading OP_RETURN messages from Bitcoin SV
 - **[Bitsocket](https://www.bitsocket.org):** For subscribing to OP_RETURN messages from Bitcoin SV
 
 ## Examples
-- View the [live bitchat demo application](https://bitchat.allaboard.cash)
+- View the [live bitchat demo application](https://bitchat.allaboardbitcoin.com)
 
 ## Code Standards
 - Always use the language's best practices
 - For the serverless cloud functions we follow the [ESLint rules](https://github.com/rohenaz/allaboard-bitchat/blob/master/functions/.eslintrc.json).
 
 ## Usage
-- Use this [current demo](https://bitchat.allaboard.cash) to create a cloud based web application in minutes
-- Setup your own custom application using the [AllAboard API](https://allaboard.cash/docs)
+- Use this [current demo](https://bitchat.allaboardbitcoin.com) to create a cloud based web application in minutes
+- Setup your own custom application using the [AllAboard API](https://allaboardbitcoin.com/docs)
 
 ## Maintainers
 [Satchmo](https://github.com/rohenaz) - [MrZ](https://github.com/mrz1836)
 
-Support the development of this project and the [AllAboard](https://allaboard.cash) team 🙏
+Support the development of this project and the [AllAboard](https://allaboardbitcoin.com) team 🙏
 
-[![Donate](https://img.shields.io/badge/donate-bitcoin%20SV-brightgreen.svg)](https://allaboard.cash/?af=allaboard-bitchat)
+[![Donate](https://img.shields.io/badge/donate-bitcoin%20SV-brightgreen.svg)](https://allaboardbitcoin.com/?af=allaboard-bitchat)
 
 ## Contributing
 Feel free to dive in! [Open an issue](https://github.com/rohenaz/allaboard-bitchat/issues/new) or submit PRs.

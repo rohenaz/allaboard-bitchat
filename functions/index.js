@@ -9,7 +9,7 @@ const admin = require('firebase-admin')
 admin.initializeApp()
 
 // AllAboard api url endpoint
-const apiUrl = 'https://api.allaboard.cash/faucet'
+const apiUrl = 'https://api.allaboardbitcoin.com/faucet'
 
 // Name: /push
 // Method: POST

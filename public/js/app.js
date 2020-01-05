@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
         return
       } else if (message === '/credits') {
         let html = "<br><div>CREDITS</div><br>"
-        html += "<div>Funded via Faucet Bot API from <a href='https://allaboard.cash'>AllAboard.cash</a>.</div>"
+        html += "<div>Funded via Faucet Bot API from <a href='https://allaboardbitcoin.com'>AllAboard.cash</a>.</div>"
         html += "<div>Powered by <a href='https://bitdb.network'>Bitdb.network</a> & <a href='https://bitsocket.org'>Bitsocket.org</a>, and the Bitcoin SV Blockchain.</div>"
         let row = document.createElement("div")
         row.className = "refill"
