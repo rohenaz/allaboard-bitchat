@@ -4,7 +4,8 @@ var query = {
   "v": 3,
   "q": {
     "find": {
-      "MAP.app": "bitchat"
+      "MAP.app": "bitchat",
+      "MAP.paymail": { "$exists": true }
     },
     "limit": 200
   }
@@ -154,8 +155,8 @@ document.addEventListener("DOMContentLoaded", function(e) {
       var i = document.querySelector("#chat")
       i.setAttribute("placeholder", "")
       i.removeAttribute("readonly")
-      data.m = `${data.MAP.paymail}:${data.B.content.trim()}`
-      data.timestamp = moment(data.blk.t).format('M/D, h:mm:ss a');
+      data.m = `${data.MAP.paymail}: ${data.B.content.trim()}`
+      data.timestamp = moment(data.blk.t*1000).format('M/D, h:mm:ss a');
       data.h = data.tx.h
       var html = template2(data)
       var d = document.createElement("div")
@@ -257,11 +258,12 @@ var reload = function(template) {
   }).then(function(res) {
     res.c.forEach(function(item) {
       try {
-        item.m = item.B.content.trim()
+        item.m = `${item.MAP.paymail}: ${item.B.content.trim()}`
       } catch (e) {
       }
-      item.timestamp = moment(item.blk.t).format('M/D, h:mm:ss a');
+      item.timestamp = moment(item.blk.t*1000).format('M/D, h:mm:ss a');
     })
+    res.c = [...res.c.sort((a, b) => a.blk.t > b.blk.t ? -1 : 1)]
     welcome(res, template)
   })
 }
