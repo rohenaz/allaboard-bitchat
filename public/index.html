@@ -27,15 +27,15 @@
   <script id="tpl" type="text/x-handlebars-template">
     {{#each r}}
     <div class='row'>
-      <div class='m'>{{m}}</div>
-      <a target="_blank" href="https://whatsonchain.com/tx/{{h}}" class='t'>{{timestamp}} <i class='fab fa-bitcoin'></i><i
+      <div class='m {{classNames}}'>{{m}}</div>
+      <a target="_blank" href="{{url}}{{h}}" class='t'>{{timestamp}} <i class='fab fa-bitcoin'></i><i
           class='fas fa-angle-double-right'></i></a>
     </div>
     {{/each}}
   </script>
   <script id="tpl2" type="text/x-handlebars-template">
     <div class='m'>{{m}}</div>
-    <a target="_blank" href="https://whatsonchain.com/tx/{{h}}" class='t'>{{timestamp}} <i class='fab fa-bitcoin'></i><i
+    <a target="_blank" href="{{url}}{{h}}" class='t'>{{timestamp}} <i class='fab fa-bitcoin'></i><i
         class='fas fa-angle-double-right'></i></a>
   </script>
   <script type="application/javascript" src="js/app.js"></script>

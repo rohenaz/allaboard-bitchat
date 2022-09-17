@@ -4,38 +4,69 @@ var query = {
   "v": 3,
   "q": {
     "find": {
-      "MAP.app": "bitchat",
-      "MAP.paymail": { "$exists": true }
+      "MAP.app":{ "$in":["blockpost.network","bitchat","jamify"] },
+      "MAP.type": { "$in": ["post","chat"] }, 
     },
-    "limit": 200
+    "sort": {
+      "blk.t": -1
+    },
+    "limit": 100
   }
 }
 
 var sock = {
-  "v": 3,
-  "q": {
-    "find": {
-      "MAP.app": {"$in": ["bitchat", "blockpost.network"]}
+  "v":3,
+  "q":{
+    "find":{
+      "MAP.type": {"$in": ["post","chat"]}, 
+      "MAP.app":{"$in":["blockpost.network","bitchat", "jamify"]}
+    },
+    "sort": {
+      "blk.t": -1
     }
   }
+}
+
+
+// get window query params, set channel context if needed
+const searchParams = new URLSearchParams(window.location.search);
+
+if (searchParams.has('c')) {
+  query.q.find['MAP.channel'] = searchParams.get('c')
+  sock.q.find['MAP.channel'] = searchParams.get('c')
+} else {
+  query.q.find['MAP.channel'] = { '$exists': false }
+  sock.q.find['MAP.channel'] = { '$exists': false }
+}
+
+// var sock = {
+//   "v": 3,
+//   "q": {
+//     "find": {
+//       "MAP.app": {"$in": ["bitchat", "blockpost.network"]}
+//     }
+//   }
   // "r": {
   //   "f": "[.[] | { m: .B.content, t: .blk.t, h: .tx.h }]"
   // }
-}
+//}
 var balance
 
-//var audio = new Audio("https://bitchat.bitdb.network/newmessage.mp3")
+var audio = new Audio("https://bitchat.allaboardbitcoin.com/audio/notify.mp3")
 var query_b64 = btoa(JSON.stringify(query))
 var sock_b64 = btoa(JSON.stringify(sock))
 var query_url = 'https://b.map.sv/q/'+query_b64
 var socket_url = 'https://b.map.sv/s/'+sock_b64
 var bitsocket
 
-//Load audio
-//audio.load()
+// Load audio
+audio.load()
 
 // template
 document.addEventListener("DOMContentLoaded", function(e) {
+  audio.volume = 0.25
+  const initMuted = localStorage.getItem('bitchat.muted')
+  audio.muted = initMuted === 'true'
   var paymail = localStorage.getItem('bitchat.paymail')
 
   document.querySelector("form").addEventListener("submit", async function(e) {
@@ -61,6 +92,48 @@ document.addEventListener("DOMContentLoaded", function(e) {
         document.querySelector(".container").appendChild(row)
         chat.value = ""
         return
+      } else if (message.startsWith('/join ') || message.startsWith('/j ')) {
+        let chunks = message.split(" ")
+        if (chunks.length !== 2) {
+          // TODO: Show usage error to user
+          console.error('Wrong command size')
+          return
+        }
+        const channel = chunks[1]
+        if (channel) {
+          window.location.href = 'https://bitchat.allaboardbitcoin.com/?c=' + channel.replace('#', '')
+        }
+        return
+      } else if (message === '/list' || message === '/channels') {
+        // TODO
+        html += "<div>TODO</div>"
+        let row = document.createElement("div")
+        row.className = "refill"
+        row.innerHTML = html
+        document.querySelector(".container").appendChild(row)
+        chat.value = ""
+        if (!audio.muted) {
+          audio.play()
+        }
+        return
+      } else if (message === '/mute') {
+        localStorage.setItem('bitchat.muted', !audio.muted ? 'true' : 'false')
+        let html = `<br><div>AUDIO ${ audio.muted ? 'UNMUTED' : 'MUTED'}</div><br>`
+
+        audio.muted = !audio.muted
+
+        let row = document.createElement("div")
+        row.className = "refill"
+        row.innerHTML = html
+        document.querySelector(".container").appendChild(row)
+        chat.value = ""
+        if (bottom()) {
+          document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
+        }
+        if (!audio.muted) {
+          audio.play()
+        }
+        return
       } else if (message === '/help') {
         let html = helpHTML()
         let row = document.createElement("div")
@@ -68,6 +141,9 @@ document.addEventListener("DOMContentLoaded", function(e) {
         row.innerHTML = html
         document.querySelector(".container").appendChild(row)
         chat.value = ""
+        if (bottom()) {
+          document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
+        }
         return
       } else if (message === '/logout') {
         localStorage.removeItem('paymail')
@@ -105,6 +181,10 @@ document.addEventListener("DOMContentLoaded", function(e) {
           'paymail',
           paymail
         ];
+        if (searchParams.has('c')) {
+          dataPayload.push('context', 'channel', 'channel', searchParams.get('c'))
+        }
+
         chat.value = ""
         const script = nimble.Script.fromASM(
           // dataPayload.map((d) => bops.from(d, 'utf8')))
@@ -119,8 +199,10 @@ document.addEventListener("DOMContentLoaded", function(e) {
 
           i.removeAttribute('readonly')
           i.removeAttribute('placeholder')
-      } catch (e) {
-        console.error(e)
+        } catch (e) {
+          i.removeAttribute('readonly')
+          i.removeAttribute('placeholder')
+          console.error(e)
       }
     } else {
       // login
@@ -151,22 +233,37 @@ document.addEventListener("DOMContentLoaded", function(e) {
     var data = res.data[0]
     console.log(res)
     if (res.type === 'push') {
-      //audio.play()
+      if (!audio.muted) {
+        audio.play()
+      }
       var i = document.querySelector("#chat")
       i.setAttribute("placeholder", "")
       i.removeAttribute("readonly")
-      data.m = `${data.MAP.paymail}: ${data.B.content.trim()}`
+      data.m = `${data.MAP.paymail || data.AIP?.address}: ${data.B.content.trim()}`
       data.timestamp = moment(data.blk.t*1000).format('M/D, h:mm:ss a');
       data.h = data.tx.h
       var html = template2(data)
       var d = document.createElement("div")
       d.innerHTML = html
-      d.className = "row"
+      if (data.MAP.type === 'post') {
+        d.classList = "row post"
+      } else {
+        d.className = "row"
+      }
       document.querySelector(".container").appendChild(d)
 
-      if (bottom()) {
-        document.querySelector(".container").scrollTop = 100000000
+      if (bottom()) {       
+        document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
       }
+    } else if (res.type === 'block') {
+      // TODO: put a new block message in the chat, BSV yellow color
+      // var header = `NEW BLOCK ${data.block_height}`
+     
+      // figlet(header, '3D-ASCII', function(err, text) {
+      //   if (err) {
+      //     return
+      //   }
+      // })
     }
   }
 
@@ -180,12 +277,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
 
 var bottom = function() {
   var container = document.querySelector(".container")
-  console.log("d.scrollTop=", container.scrollTop)
-  console.log("d.clientHeight=", container.clientHeight)
-  console.log("d.scrollHeight", container.scrollHeight)
-  console.log("sum = ", container.scrollTop + container.clientHeight + 100)
   var isbottom = (container.scrollTop + container.clientHeight + 100 >= container.scrollHeight)
-  console.log(isbottom)
   return isbottom
 }
 
@@ -206,11 +298,11 @@ var login = function() {
     headertext += "<div>Welcome.</div><br><br>"
     headertext += "<div>Bitchat is a Realtime Chatroom on the Bitcoin Blockchain.</div>"
     headertext += '<div>Your messages are stored on Bitcoin forever as a Bitcoin OP_RETURN transaction.</div>'
-    headertext += "<div>A RelayX wallet is required. If you don't have one, sign up <a href='https://relayx.io'>here</a></div>"
+    headertext += "<div>A RelayX wallet is required. If you don't have one, sign up <a href='https://relayx.com/sign-up'>here</a></div>"
 
     headertext += "<br><br><br><div>Press Enter to log in...</div>"
     document.querySelector(".container").innerHTML = headertext
-    document.querySelector(".container").scrollTop = 100000000
+    document.querySelector(".container").scrollTop = document.querySelector('.container').scrollHeight
     document.querySelector("input[type=text]").focus()
   })
 }
@@ -218,8 +310,10 @@ var login = function() {
 var welcome = function(res, template) {
   //updateStatus().then(() => {
     var reversed = {
-      r: res.c.reverse().map((t) => { 
+      r: res.c.reverse().map((t) => {
+        t.url = t.MAP.type === "post" && t.MAP.app === "blockpost.network" ? "https://blockpost.network/post/" : "https://whatsonchain.com/tx/"
         t.h = t.tx.h;
+        t.classNames = `${t.MAP.type === 'post' ? 'post' : '' }`
         return t; 
       })
     }
@@ -246,7 +340,7 @@ var welcome = function(res, template) {
       headertext += helpHTML()
 
       document.querySelector(".container").innerHTML = html + headertext
-      document.querySelector(".container").scrollTop = 100000000
+      document.querySelector(".container").scrollTop = document.querySelector('.container').scrollHeight
       document.querySelector("input[type=text]").focus()
     })
   //})
@@ -258,13 +352,14 @@ var reload = function(template) {
   }).then(function(res) {
     res.c.forEach(function(item) {
       try {
-        item.m = `${item.MAP.paymail}: ${item.B.content.trim()}`
+        item.m = `${item.MAP.paymail || item.AIP.address}: ${item.B.content.trim()}`
       } catch (e) {
       }
       item.timestamp = moment(item.blk.t*1000).format('M/D, h:mm:ss a');
     })
     res.c = [...res.c.sort((a, b) => a.blk.t > b.blk.t ? -1 : 1)]
     welcome(res, template)
+    document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
   })
 }
 
@@ -272,6 +367,9 @@ var helpHTML = function() {
   var text = "<br><br><div>COMMANDS</div><br>"
   text += "<div>/logout - switch your paymail.</div>"
   text += "<div>/credits - demo application credits.</div>"
+  text += "<div>/mute - toggle the chat sound on/off</div>"
+  text += "<div>/list - list available channels</div>"
+  text += "<div>/join #channel - joins a channel by name</div>"
   return text + "<div>/help - this message.<br><br><br>"
 }
 
