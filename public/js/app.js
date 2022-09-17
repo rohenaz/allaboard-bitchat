@@ -59,6 +59,10 @@ var query_url = 'https://b.map.sv/q/'+query_b64
 var socket_url = 'https://b.map.sv/s/'+sock_b64
 var bitsocket
 
+// music player
+var player = new Audio()
+var collection = []
+
 // Load audio
 audio.load()
 
@@ -91,6 +95,15 @@ document.addEventListener("DOMContentLoaded", function(e) {
         row.innerHTML = html
         document.querySelector(".container").appendChild(row)
         chat.value = ""
+        return
+      } else if (message.startsWith('/play')) {
+
+        // play random songs from your NFT collection
+
+        // get the collection
+
+        // group them by origin
+
         return
       } else if (message.startsWith('/join ') || message.startsWith('/j ')) {
         let chunks = message.split(" ")
@@ -242,6 +255,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
       data.m = `${data.MAP.paymail || data.AIP?.address}: ${data.B.content.trim()}`
       data.timestamp = moment(data.blk.t*1000).format('M/D, h:mm:ss a');
       data.h = data.tx.h
+      data.url = data.MAP.type === 'post' ? 'https://blockpost.network/post/' : 'https://whatsonchain.com/tx/'
       var html = template2(data)
       var d = document.createElement("div")
       d.innerHTML = html
