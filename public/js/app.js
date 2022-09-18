@@ -18,7 +18,6 @@ var sock = {
   "q":{
     "find":{
       "MAP.type": {"$in": ["post","message"]}, 
-      "MAP.app":{"$in":["blockpost.network","bitchat", "jamify"]}
     },
     "sort": {
       "blk.t": -1
@@ -143,6 +142,9 @@ document.addEventListener("DOMContentLoaded", function(e) {
           window.location.href = 'https://bitchat.allaboardbitcoin.com/?c=' + channel.replace('#', '')
         }
         return
+      } else if (message === '/back' || message === 'cd ..') {
+        window.location.href = 'https://bitchat.allaboardbitcoin.com'
+        return
       } else if (message === '/list' || message === '/channels') {
 
         let html = "<br><div>CHANNELS</div><br>"
@@ -201,8 +203,15 @@ document.addEventListener("DOMContentLoaded", function(e) {
         }
         return
       } else if (message === '/logout') {
-        localStorage.removeItem('paymail')
-        window.location.reload(true);
+        localStorage.removeItem('bitchat.paymail')
+        // TODO: log out of relay (doesn't work) - relay doesn't support this endpoint
+        // var win = window.open('http://relayx.com/logout','_blank','width=800,height=600,status=0,toolbar=0');
+        // setTimeout(() => {
+        //   win.close()
+        //   window.location.reload(true); 
+        // }, 5000)
+        window.location.reload(true); 
+        
         return
       } else if (paymail && message.trim().length === 0) {
         alert("No blank messages")
@@ -367,7 +376,17 @@ var welcome = function(res, template) {
   //updateStatus().then(() => {
     var reversed = {
       r: res.c.reverse().map((t) => {
-        t.url = t.MAP.type === "post" && t.MAP.app === "blockpost.network" ? "https://blockpost.network/post/" : "https://whatsonchain.com/tx/"
+        switch (t.MAP.app) {
+          case 'blockpost.network':
+            t.url = "https://blockpost.network/post/"
+          break;
+          case 'twetch':
+            t.url = 'https://twetch.com/t/'
+            break;
+          default:
+            t.url = "https://whatsonchain.com/tx/"
+            break
+        }
         t.h = t.tx.h;
         t.classNames = `${t.MAP.type === 'post' ? 'post' : '' }`
         return t; 
