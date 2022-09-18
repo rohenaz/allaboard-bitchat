@@ -4,8 +4,7 @@ var query = {
   "v": 3,
   "q": {
     "find": {
-      "MAP.app":{ "$in":["blockpost.network","bitchat","jamify"] },
-      "MAP.type": { "$in": ["post","chat"] }, 
+      "MAP.type": { "$in": ["post","message"] }, 
     },
     "sort": {
       "blk.t": -1
@@ -18,7 +17,7 @@ var sock = {
   "v":3,
   "q":{
     "find":{
-      "MAP.type": {"$in": ["post","chat"]}, 
+      "MAP.type": {"$in": ["post","message"]}, 
       "MAP.app":{"$in":["blockpost.network","bitchat", "jamify"]}
     },
     "sort": {
@@ -27,6 +26,29 @@ var sock = {
   }
 }
 
+var queryChannels = {
+  "v": 3,
+  "q": {
+    "aggregate": [
+      {
+        "$match": {"MAP.type": "message" }
+      },
+      {
+        "$sort": { "blk.t": 1 }
+      },
+      {
+        "$group": {
+          "_id": "$MAP.channel",
+          "channel": { "$first": "$MAP.channel" },
+          "creator": { "$first": "$MAP.paymail" },
+          "last_message": { "$last": "$B.content" },
+          "messages": { "$sum": 1 }
+        }
+      }
+      ],
+    "limit": 100
+  }
+}
 
 // get window query params, set channel context if needed
 const searchParams = new URLSearchParams(window.location.search);
@@ -54,8 +76,10 @@ var balance
 
 var audio = new Audio("https://bitchat.allaboardbitcoin.com/audio/notify.mp3")
 var query_b64 = btoa(JSON.stringify(query))
+var queryChannelsB64 = btoa(JSON.stringify(queryChannels))
 var sock_b64 = btoa(JSON.stringify(sock))
 var query_url = 'https://b.map.sv/q/'+query_b64
+var queryChannelsUrl = 'https://b.map.sv/q/'+queryChannelsB64
 var socket_url = 'https://b.map.sv/s/'+sock_b64
 var bitsocket
 
@@ -63,6 +87,8 @@ var bitsocket
 var player = new Audio()
 var collection = []
 
+// channels
+var channels = []
 // Load audio
 audio.load()
 
@@ -118,16 +144,32 @@ document.addEventListener("DOMContentLoaded", function(e) {
         }
         return
       } else if (message === '/list' || message === '/channels') {
-        // TODO
-        html += "<div>TODO</div>"
+
+        let html = "<br><div>CHANNELS</div><br>"
         let row = document.createElement("div")
-        row.className = "refill"
-        row.innerHTML = html
-        document.querySelector(".container").appendChild(row)
-        chat.value = ""
-        if (!audio.muted) {
-          audio.play()
-        }
+        fetch(queryChannelsUrl).then(function(res) {
+          return res.json()
+        }).then(function(res) {
+          channels = (res.c || []).filter(c => !!c.channel).map(c => c.channel)
+          console.log({ channels })
+          res.c.forEach(function (c) {
+            if (c.channel) {
+              html += `<div>#${c.channel} (${c.messages})</div>\n`
+            }
+          })
+          
+          row.className = "refill"
+          row.innerHTML = html
+          document.querySelector(".container").appendChild(row)
+          chat.value = ""
+          if (!audio.muted) {
+            audio.play()
+          }
+          if (bottom()) {
+            document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
+          }
+        })
+        
         return
       } else if (message === '/mute') {
         localStorage.setItem('bitchat.muted', !audio.muted ? 'true' : 'false')
@@ -190,7 +232,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
           'app',
           'bitchat',
           'type',
-          'chat',
+          'message',
           'paymail',
           paymail
         ];
