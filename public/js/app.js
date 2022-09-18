@@ -130,7 +130,10 @@ document.addEventListener("DOMContentLoaded", function(e) {
         // group them by origin
 
         return
-      } else if (message.startsWith('/join ') || message.startsWith('/j ')) {
+      } else if (message === '/back' || message === 'cd ..') {
+        window.location.href = 'https://bitchat.allaboardbitcoin.com'
+        return
+      } else if (message.startsWith('/join ') || message.startsWith('/j ') || message.startsWith('cd ')) {
         let chunks = message.split(" ")
         if (chunks.length !== 2) {
           // TODO: Show usage error to user
@@ -142,10 +145,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
           window.location.href = 'https://bitchat.allaboardbitcoin.com/?c=' + channel.replace('#', '')
         }
         return
-      } else if (message === '/back' || message === 'cd ..') {
-        window.location.href = 'https://bitchat.allaboardbitcoin.com'
-        return
-      } else if (message === '/list' || message === '/channels') {
+      } else if (message === 'ls' || message === 'dir' ||message === '/list' || message === '/channels') {
 
         let html = "<br><div>CHANNELS</div><br>"
         let row = document.createElement("div")
