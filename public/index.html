@@ -16,6 +16,7 @@
   <meta property="og:title" content="Bitchat"/>
   <meta property="og:description" content="A realtime chatroom over Bitcoin"/>
   <meta property="og:image" content="https://bitchat.allaboardbitcoin.com/images/screen.png"/>
+  <link rel="manifest" href="./manifest.json">
   <link rel="stylesheet" href="css/app.css"/>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
         integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
@@ -54,3 +55,10 @@
 </form>
 </body>
 </html>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/serviceworker.js')
+    .then(registration => {console.log('Registration successful, scope is:', registration.scope)})
+    .catch(error => {console.log('Service worker registration failed, error:', error)});
+  }
+</script>
