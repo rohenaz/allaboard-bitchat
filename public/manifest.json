@@ -1,0 +1,18 @@
+{
+    "name": "Bitchat",
+    "short_name": "Bitchat",
+    "description": "A real-time chatroom over Bitcoin",
+    "theme_color": "#000000",
+    "background_color": "#000000",
+    "display": "standalone",
+    "orientation": "portrait",
+    "Scope": "/",
+    "start_url": "/index.html",
+    "icons": [
+      {
+        "src": "images/bitchat_logo.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+    ]
+  }
