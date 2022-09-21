@@ -41,10 +41,12 @@ var queryChannels = {
           "channel": { "$first": "$MAP.channel" },
           "creator": { "$first": "$MAP.paymail" },
           "last_message": { "$last": "$B.content" },
+          "last_message_time": { "$last": "$blk.t" },
           "messages": { "$sum": 1 }
         }
       }
-      ],
+    ],
+    "sort": { "last_message_time": -1 },
     "limit": 100
   }
 }
@@ -107,11 +109,11 @@ document.addEventListener("DOMContentLoaded", function(e) {
       var chat = document.querySelector("#chat")
       var timestamp = parseInt(Date.now()/1000)
       var message = chat.value.trim()
-      if (message === "/balance") {
+      if (message.toLowerCase() === "/balance") {
         chat.value = ""
         refill()
         return
-      } else if (message === '/credits') {
+      } else if (message.toLowerCase() === '/credits') {
         let html = "<br><div>CREDITS</div><br>"
         // html += "<div>Funded via Faucet Bot API from <a href='https://allaboardbitcoin.com'>AllAboard.cash</a>.</div>"
         html += "<div>Powered by <a href='https://b.map.sv'>b.map.sv</a>, <a href='https://bitcoinschema.org'>BitcoinSchema.org</a>, <a href='https://allaboardbitcoin.com'>AllAboardBitcoin.com</a>, <a href='https://junglebus.gorillapool.io'>JungleBus</a> & the Bitcoin SV Blockchain.</div>"
@@ -121,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
         document.querySelector(".container").appendChild(row)
         chat.value = ""
         return
-      } else if (message.startsWith('/play')) {
+      } else if (message.toLowerCase().startsWith('/play')) {
 
         // play random songs from your NFT collection
 
@@ -130,10 +132,10 @@ document.addEventListener("DOMContentLoaded", function(e) {
         // group them by origin
 
         return
-      } else if (message === '/back' || message === 'cd ..') {
+      } else if (message.toLowerCase() === '/back' || message.toLowerCase() === 'cd ..') {
         window.location.href = 'https://bitchat.allaboardbitcoin.com'
         return
-      } else if (message.startsWith('/join ') || message.startsWith('/j ') || message.startsWith('cd ')) {
+      } else if (message.toLowerCase().startsWith('/join ') || message.toLowerCase().startsWith('/j ') || message.toLowerCase().startsWith('cd ')) {
         let chunks = message.split(" ")
         if (chunks.length !== 2) {
           // TODO: Show usage error to user
@@ -145,13 +147,13 @@ document.addEventListener("DOMContentLoaded", function(e) {
           window.location.href = 'https://bitchat.allaboardbitcoin.com/?c=' + channel.replace('#', '')
         }
         return
-      } else if (message === 'ls' || message === 'dir' ||message === '/list' || message === '/channels') {
+      } else if (message.toLowerCase() === 'ls' || message.toLowerCase() === 'dir' ||message.toLowerCase() === '/list' || message.toLowerCase() === '/channels') {
 
         let html = "<br><div>CHANNELS</div><br>"
         let row = document.createElement("div")
         fetch(queryChannelsUrl).then(function(res) {
           return res.json()
-        }).then(function(res) {
+        }).then((res) => {
           channels = (res.c || []).filter(c => !!c.channel).map(c => c.channel)
           console.log({ channels })
           res.c.forEach(function (c) {
@@ -167,13 +169,12 @@ document.addEventListener("DOMContentLoaded", function(e) {
           if (!audio.muted) {
             audio.play()
           }
-          if (bottom()) {
-            document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
-          }
+          
+          document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
         })
         
         return
-      } else if (message === '/mute') {
+      } else if (message.toLowerCase() === '/mute') {
         localStorage.setItem('bitchat.muted', !audio.muted ? 'true' : 'false')
         let html = `<br><div>AUDIO ${ audio.muted ? 'UNMUTED' : 'MUTED'}</div><br>`
 
@@ -184,25 +185,23 @@ document.addEventListener("DOMContentLoaded", function(e) {
         row.innerHTML = html
         document.querySelector(".container").appendChild(row)
         chat.value = ""
-        if (bottom()) {
-          document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
-        }
+        document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
+        
         if (!audio.muted) {
           audio.play()
         }
         return
-      } else if (message === '/help') {
+      } else if (message.toLowerCase() === '/help') {
         let html = helpHTML()
         let row = document.createElement("div")
         row.className = "refill"
         row.innerHTML = html
         document.querySelector(".container").appendChild(row)
         chat.value = ""
-        if (bottom()) {
-          document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
-        }
+        document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
+        
         return
-      } else if (message === '/logout') {
+      } else if (message.toLowerCase() === '/logout') {
         localStorage.removeItem('bitchat.paymail')
         // TODO: log out of relay (doesn't work) - relay doesn't support this endpoint
         // var win = window.open('http://relayx.com/logout','_blank','width=800,height=600,status=0,toolbar=0');
@@ -303,7 +302,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
       var i = document.querySelector("#chat")
       i.setAttribute("placeholder", "")
       i.removeAttribute("readonly")
-      data.m = `${data.MAP.paymail || data.AIP?.address}: ${data.B.content.trim()}`
+      data.m = `${data.MAP.paymail || data.AIP?.address}: ${Autolinker.link(data.B.content.trim())}`
       data.timestamp = moment(data.blk.t*1000).format('M/D, h:mm:ss a');
       data.h = data.tx.h
       data.url = data.MAP.type === 'post' ? 'https://blockpost.network/post/' : 'https://whatsonchain.com/tx/'
@@ -392,7 +391,7 @@ var welcome = function(res, template) {
         return t; 
       })
     }
-    var header = "Bitchat"
+    var header = searchParams.has('c') ? searchParams.get('c') : "Bitchat"
     var headertext = "\n\n"
     figlet(header, '3D-ASCII', function(err, text) {
       if (err) {
@@ -406,7 +405,7 @@ var welcome = function(res, template) {
         headertext += "<div class='pre'>" + text + "</div>"
       }
       var html = template(reversed)
-      headertext += "Welcome " + localStorage.getItem('bitchat.paymail')
+      headertext += `Welcome ${searchParams.has('c') ? 'to #' + searchParams.get('c') : ''} ${localStorage.getItem('bitchat.paymail')}`
       headertext += "<br><br>"
       headertext += "<div>1. Your messages are stored on Bitcoin forever as an OP_RETURN transaction"
       headertext += "<div>2. Messages use BitcoinSchema and may show up on other websites."
@@ -427,7 +426,7 @@ var reload = function(template) {
   }).then(function(res) {
     res.c.forEach(function(item) {
       try {
-        item.m = `${item.MAP.paymail || item.AIP.address}: ${item.B.content.trim()}`
+        item.m = `${item.MAP.paymail || item.AIP.address}: ${Autolinker.link(item.B.content.trim())}`
       } catch (e) {
       }
       item.timestamp = moment(item.blk.t*1000).format('M/D, h:mm:ss a');
@@ -445,6 +444,7 @@ var helpHTML = function() {
   text += "<div>/mute - toggle the chat sound on/off</div>"
   text += "<div>/list - list available channels</div>"
   text += "<div>/join #channel - joins a channel by name</div>"
+  text += "<div>/back - returns to global channel</div>"
   return text + "<div>/help - this message.<br><br><br>"
 }
 

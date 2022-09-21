@@ -3,6 +3,7 @@
 }
 .row .m {
     flex-grow: 1;
+    overflow-wrap: break-word;
 }
 .row .t {
     color: rgba(255,255,255,0.3);
@@ -49,6 +50,12 @@ body {
     text-shadow: 0 0.2rem 1rem #7b0c74;
     color: #cf62c2;
 }
+.post a {
+    color: #cf62c2;
+}
+.post a:hover {
+    color: #d283c9;
+}
 .pre {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -58,6 +65,9 @@ a {
     display: inline !important;
     color: #62cf72;
     font-weight: bold;
+}
+a:hover {
+    color: #49d25d;
 }
 .container {
     flex-grow: 1;

@@ -27,14 +27,14 @@
   <script id="tpl" type="text/x-handlebars-template">
     {{#each r}}
     <div class='row'>
-      <div class='m {{classNames}}'>{{m}}</div>
+      <div class='m {{classNames}}'>{{{m}}}</div>
       <a target="_blank" href="{{url}}{{h}}" class='t'>{{timestamp}} <i class='fab fa-bitcoin'></i><i
           class='fas fa-angle-double-right'></i></a>
     </div>
     {{/each}}
   </script>
   <script id="tpl2" type="text/x-handlebars-template">
-    <div class='m'>{{m}}</div>
+    <div class='m'>{{{m}}}</div>
     <a target="_blank" href="{{url}}{{h}}" class='t'>{{timestamp}} <i class='fab fa-bitcoin'></i><i
         class='fas fa-angle-double-right'></i></a>
   </script>
@@ -43,6 +43,7 @@
   <script src="https://unpkg.com/@runonbitcoin/nimble"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/utf8/3.0.0/utf8.min.js" integrity="sha512-Up/VFqLmUsS5GMd4XTuxE6NsCsBJlPv12A9apHDqRx8v/x+++Qmmg2M1kTs8cQztxHk0d/rgAqmVOjzEKBZH7A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src ="https://unpkg.com/bops@1.0.1/dist/bops.js"></script>
+  <script src ="https://unpkg.com/autolinker@3.14.2/dist/Autolinker.min.js"></script>
 </head>
 <body>
 <div class='container'>
