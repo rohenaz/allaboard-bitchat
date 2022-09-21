@@ -20,7 +20,7 @@ html {
 
 html::after {
     content: "";
-    background: url('https://bitchat.allaboardbitcoin.com/images/bg.png');
+    background: url('https://bitchat.allaboardbitcoin.com/images/bg.webp');
     opacity: 0.25;
     top: 0;
     left: 0;
