@@ -1,30 +1,5 @@
 var isMobile = (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1)
 
-var query = {
-  "v": 3,
-  "q": {
-    "find": {
-      "MAP.type": { "$in": ["post","message"] }, 
-    },
-    "sort": {
-      "blk.t": -1
-    },
-    "limit": 100
-  }
-}
-
-var sock = {
-  "v":3,
-  "q":{
-    "find":{
-      "MAP.type": {"$in": ["post","message"]}, 
-    },
-    "sort": {
-      "blk.t": -1
-    }
-  }
-}
-
 var queryChannels = {
   "v": 3,
   "q": {
@@ -51,54 +26,49 @@ var queryChannels = {
   }
 }
 
-// get window query params, set channel context if needed
-const searchParams = new URLSearchParams(window.location.search);
-
-if (searchParams.has('c')) {
-  query.q.find['MAP.channel'] = searchParams.get('c')
-  sock.q.find['MAP.channel'] = searchParams.get('c')
-} else {
-  query.q.find['MAP.channel'] = { '$exists': false }
-  sock.q.find['MAP.channel'] = { '$exists': false }
-}
-
-// var sock = {
-//   "v": 3,
-//   "q": {
-//     "find": {
-//       "MAP.app": {"$in": ["bitchat", "blockpost.network"]}
-//     }
-//   }
-  // "r": {
-  //   "f": "[.[] | { m: .B.content, t: .blk.t, h: .tx.h }]"
-  // }
-//}
 var balance
 
 var audio = new Audio("https://bitchat.allaboardbitcoin.com/audio/notify.mp3")
-var query_b64 = btoa(JSON.stringify(query))
+
 var queryChannelsB64 = btoa(JSON.stringify(queryChannels))
-var sock_b64 = btoa(JSON.stringify(sock))
-var query_url = 'https://b.map.sv/q/'+query_b64
 var queryChannelsUrl = 'https://b.map.sv/q/'+queryChannelsB64
-var socket_url = 'https://b.map.sv/s/'+sock_b64
 var bitsocket
 
 // music player
 var player = new Audio()
 var collection = []
-
 // channels
 var channels = []
+var verboseMode = false
+
 // Load audio
 audio.load()
+
+// get window query params, set channel context if needed
+const searchParams = new URLSearchParams(window.location.search);
 
 // template
 document.addEventListener("DOMContentLoaded", function(e) {
   audio.volume = 0.25
   const initMuted = localStorage.getItem('bitchat.muted')
+  const initVerbose = localStorage.getItem('bitchat.verbose')
+  verboseMode = initVerbose === 'true'
   audio.muted = initMuted === 'true'
   var paymail = localStorage.getItem('bitchat.paymail')
+
+  var query_b64 = btoa(JSON.stringify(query(verboseMode)))
+  var query_url = 'https://b.map.sv/q/'+query_b64
+  var sock_b64 = btoa(JSON.stringify(sock(verboseMode)))
+  var socket_url = 'https://b.map.sv/s/'+sock_b64
+
+
+  if (searchParams.has('c')) {
+    query(verboseMode).q.find['MAP.channel'] = searchParams.get('c')
+    sock(verboseMode).q.find['MAP.channel'] = searchParams.get('c')
+  } else {
+    query(verboseMode).q.find['MAP.channel'] = { '$exists': false }
+    sock(verboseMode).q.find['MAP.channel'] = { '$exists': false }
+  }
 
   document.querySelector("form").addEventListener("submit", async function(e) {
     e.preventDefault()
@@ -191,6 +161,23 @@ document.addEventListener("DOMContentLoaded", function(e) {
           audio.play()
         }
         return
+      } else if (message.toLowerCase() === '/v' || message.toLowerCase() === '/verbose') {
+        localStorage.setItem('bitchat.verbose', !verboseMode ? 'true' : 'false')
+        let html = `<br><div>VERBOSE MODE ${ !verboseMode ? 'ON' : 'OFF'}</div><br>`
+        
+        verboseMode = !verboseMode
+
+        let row = document.createElement("div")
+        row.className = "refill"
+        row.innerHTML = html
+        document.querySelector(".container").appendChild(row)
+        chat.value = ""
+        document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
+        
+        if (!audio.muted) {
+          audio.play()
+        }
+        return
       } else if (message.toLowerCase() === '/help') {
         let html = helpHTML()
         let row = document.createElement("div")
@@ -209,7 +196,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
         //   win.close()
         //   window.location.reload(true); 
         // }, 5000)
-        window.location.reload(true); 
+        window.location.reload(true, query_url); 
         
         return
       } else if (paymail && message.trim().length === 0) {
@@ -281,7 +268,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
       var chat = document.querySelector("#chat")
       // var paymail = chat.value.trim()
       // localStorage.setItem('bitchat.paymail', paymail)
-      window.location.reload(true)
+      window.location.reload(true, query_url)
     }
   })
   var source   = document.querySelector("#tpl").innerHTML
@@ -295,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
     var res = JSON.parse(e.data)
     var data = res.data[0]
     console.log(res)
-    if (res.type === 'push') {
+    if (res.type === 'push' && (data.MAP.type === 'message' || verboseMode)) {
       if (!audio.muted) {
         audio.play()
       }
@@ -333,7 +320,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
 
   var paymail = localStorage.getItem('bitchat.paymail')
   if (paymail) {
-    reload(template)
+    reload(template, query_url)
   } else {
     login()
   }
@@ -420,7 +407,7 @@ var welcome = function(res, template) {
   //})
 }
 
-var reload = function(template) {
+var reload = function(template, query_url) {
   fetch(query_url).then(function(res) {
     return res.json()
   }).then(function(res) {
@@ -431,7 +418,7 @@ var reload = function(template) {
       }
       item.timestamp = moment(item.blk.t*1000).format('M/D, h:mm:ss a');
     })
-    res.c = [...res.c.sort((a, b) => a.blk.t > b.blk.t ? -1 : 1)]
+    res.c = [...res.c.filter((c) => c.MAP.type === 'message' || verboseMode).sort((a, b) => a.blk.t > b.blk.t ? -1 : 1)]
     welcome(res, template)
     document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
   })
@@ -445,8 +432,38 @@ var helpHTML = function() {
   text += "<div>/list - list available channels</div>"
   text += "<div>/join #channel - joins a channel by name</div>"
   text += "<div>/back - returns to global channel</div>"
+  text += "<div>/verbose - toggle verbose mode (show posts)</div>"
   return text + "<div>/help - this message.<br><br><br>"
 }
 
 const B_PREFIX = `19HxigV4QyBv3tHpQVcUEQyq1pzZVdoAut`;
 const MAP_PREFIX = `1PuQa7K62MiKCtssSLKy1kh56WWU7MtUR5`;
+
+const query = (verbose) => {
+  return {
+    "v": 3,
+    "q": {
+      "find": {
+        "MAP.type": verbose ? { "$in": ["post","message"] } : "message", 
+      },
+      "sort": {
+        "blk.t": -1
+      },
+      "limit": 100
+    }
+  }
+}
+
+const sock = (verbose) => { 
+  return {
+    "v":3,
+    "q":{
+      "find":{
+        "MAP.type": verbose ? {"$in": ["post","message"]} : "message", 
+      },
+      "sort": {
+        "blk.t": -1
+      }
+    }
+  }
+}
