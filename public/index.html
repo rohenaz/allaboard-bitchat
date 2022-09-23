@@ -20,11 +20,15 @@
   <link rel="stylesheet" href="css/app.css"/>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
         integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/figlet@1.2.1/lib/figlet.min.js"></script>
   <script src="https://www.moneybutton.com/moneybutton.js"></script>
+  
   <script id="tpl" type="text/x-handlebars-template">
     {{#each r}}
     <div class='row'>
@@ -39,12 +43,12 @@
     <a target="_blank" href="{{url}}{{h}}" class='t'>{{timestamp}} <i class='fab fa-bitcoin'></i><i
         class='fas fa-angle-double-right'></i></a>
   </script>
-  <script type="application/javascript" src="js/app.js"></script>
-  <script src="https://one.relayx.io/relayone.js"></script>
-  <script src="https://unpkg.com/@runonbitcoin/nimble@1.0.14/dist/nimble.browser.min.js" async></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/utf8/3.0.0/utf8.min.js" integrity="sha512-Up/VFqLmUsS5GMd4XTuxE6NsCsBJlPv12A9apHDqRx8v/x+++Qmmg2M1kTs8cQztxHk0d/rgAqmVOjzEKBZH7A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src ="https://unpkg.com/bops@1.0.1/dist/bops.js" async></script>
-  <script src ="https://unpkg.com/autolinker@3.14.2/dist/Autolinker.min.js" async defer></script>
+  <script type="application/javascript" src="/js/app.js"></script>
+  <script src="/js/relayone.js"></script>
+  <script src="/js/nimble.browser.min.js" async></script>
+  <script src="/js/utf8.min.js async"></script>
+  <script src ="/js/bops.js" async></script>
+  <script src ="/js/Autolinker.min.js"></script>
 </head>
 <body>
 <div class='container'>

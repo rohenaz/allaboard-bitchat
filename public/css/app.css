@@ -43,8 +43,8 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
-    font-family: Menlo, monaco, Courier, serif;
-    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
 }
 .post {
     text-shadow: 0 0.2rem 1rem #7b0c74;
@@ -82,22 +82,22 @@ a:hover {
     margin: 0;
 }
 .input input[type=text] {
-    font-family: Menlo, monaco, Courier, serif;
-    flex-grow: 1;
+    font-family: 'JetBrains Mono', monospace;
     padding: 10px;
     border: none;
     background: none;
     color: #62cf72;
+    flex: 1;
 }
 .input input[type=text]::placeholder {
-    font-family: Menlo, monaco, Courier, serif;
+    font-family: 'JetBrains Mono', monospace;
     color: #62cf72;
 }
 .input input[type=text]:focus {
     outline: none;
 }
 .input input[type=submit] {
-    font-family: Menlo, monaco, Courier, serif;
+    font-family: 'JetBrains Mono', monospace;
     background: none;
     border: 1px solid #62cf72;
     opacity: 0.5;

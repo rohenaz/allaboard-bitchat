@@ -16,7 +16,7 @@ var queryChannels = {
           "channel": { "$first": "$MAP.channel" },
           "creator": { "$first": "$MAP.paymail" },
           "last_message": { "$last": "$B.content" },
-          "last_message_time": { "$last": "$blk.t" },
+          "last_message_time": { "$last": "$timestamp" },
           "messages": { "$sum": 1 }
         }
       }
@@ -61,14 +61,6 @@ document.addEventListener("DOMContentLoaded", function(e) {
   var sock_b64 = btoa(JSON.stringify(sock(verboseMode)))
   var socket_url = 'https://b.map.sv/s/'+sock_b64
 
-
-  if (searchParams.has('c')) {
-    query(verboseMode).q.find['MAP.channel'] = searchParams.get('c')
-    sock(verboseMode).q.find['MAP.channel'] = searchParams.get('c')
-  } else {
-    query(verboseMode).q.find['MAP.channel'] = { '$exists': false }
-    sock(verboseMode).q.find['MAP.channel'] = { '$exists': false }
-  }
 
   document.querySelector("form").addEventListener("submit", async function(e) {
     e.preventDefault()
@@ -175,8 +167,9 @@ document.addEventListener("DOMContentLoaded", function(e) {
         document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
         
         if (!audio.muted) {
-          audio.play()
+          await audio.play()
         }
+        window.location.reload(true, query_url)
         return
       } else if (message.toLowerCase() === '/help') {
         let html = helpHTML()
@@ -196,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
         //   win.close()
         //   window.location.reload(true); 
         // }, 5000)
-        window.location.reload(true, query_url); 
+        window.location.reload(true); 
         
         return
       } else if (paymail && message.trim().length === 0) {
@@ -268,7 +261,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
       var chat = document.querySelector("#chat")
       // var paymail = chat.value.trim()
       // localStorage.setItem('bitchat.paymail', paymail)
-      window.location.reload(true, query_url)
+      window.location.reload(true)
     }
   })
   var source   = document.querySelector("#tpl").innerHTML
@@ -440,30 +433,40 @@ const B_PREFIX = `19HxigV4QyBv3tHpQVcUEQyq1pzZVdoAut`;
 const MAP_PREFIX = `1PuQa7K62MiKCtssSLKy1kh56WWU7MtUR5`;
 
 const query = (verbose) => {
-  return {
+  let q = {
     "v": 3,
     "q": {
       "find": {
         "MAP.type": verbose ? { "$in": ["post","message"] } : "message", 
       },
       "sort": {
+        "timestamp": -1,
         "blk.t": -1
       },
       "limit": 100
     }
   }
+  if (searchParams.has('c')) {
+    q.q.find['MAP.channel'] = searchParams.get('c')
+  } else {
+    q.q.find['MAP.channel'] = { '$exists': false }
+  }
+  return q
 }
 
 const sock = (verbose) => { 
-  return {
+  let q = {
     "v":3,
     "q":{
       "find":{
         "MAP.type": verbose ? {"$in": ["post","message"]} : "message", 
-      },
-      "sort": {
-        "blk.t": -1
       }
     }
   }
+  if (searchParams.has('c')) {
+    q.q.find['MAP.channel'] = searchParams.get('c')
+  } else {
+    q.q.find['MAP.channel'] = { '$exists': false }
+  }
+  return q
 }
