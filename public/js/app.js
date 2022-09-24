@@ -1,5 +1,91 @@
 var isMobile = (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1)
 
+const cussWords = [
+  "beeyotch",
+  "biatch",
+  "bitch",
+  "bitches",
+  "chinaman",
+  "chinamen",
+  "chink",
+  "coolie",
+  "coon",
+  "cuck",
+  "cunt",
+  "dago",
+  "daygo",
+  "dego",
+  "dick",
+  "douchebag",
+  "dyke",
+  "fag",
+  "faggot",
+  "fatass",
+  "fatso",
+  "fuck",
+  "fucker",
+  "fuckers",
+  "fucking",
+  "gash",
+  "gook",
+  "goy",
+  "goyim",
+  "gyp",
+  "gypsy",
+  "half-breed",
+  "halfbreed",
+  "heeb",
+  "hoe",
+  "hoes",
+  "homo",
+  "hooker",
+  "jap",
+  "kike",
+  "kraut",
+  "lardass",
+  "lesbo",
+  "mick",
+  "negress",
+  "negro",
+  "nig",
+  "nig-nog",
+  "nigger",
+  "nigguh",
+  "nip",
+  "pajeet",
+  "paki",
+  "pussie",
+  "pussy",
+  "raghead",
+  "retard",
+  "shemale",
+  "shit",
+  "skank",
+  "slut",
+  "soyboy",
+  "spade",
+  "sperg",
+  "spic",
+  "spook",
+  "squaw",
+  "street-shitter",
+  "tard",
+  "tits",
+  "tit",
+  "trannie",
+  "tranny",
+  "twat",
+  "wetback",
+  "whore",
+  "wigger",
+  "wop",
+]
+
+
+// get window query params, set channel context if needed
+const searchParams = new URLSearchParams(window.location.search);
+
+
 var queryChannels = {
   "v": 3,
   "q": {
@@ -19,10 +105,50 @@ var queryChannels = {
           "last_message_time": { "$last": "$timestamp" },
           "messages": { "$sum": 1 }
         }
-      }
+      },
     ],
     "sort": { "last_message_time": -1 },
     "limit": 100
+  }
+}
+
+var queryLeaderboard = {
+  "v": 3,
+  "q": {
+    "aggregate": [
+      {
+        "$match": {
+          "MAP.type": "message",
+          "MAP.channel": searchParams.has('c') ? searchParams.get('c') : { '$exists': false }
+        }
+      },
+      {
+        "$sort": {
+          "blk.t": 1
+        }
+      },
+      {
+        "$group": {
+          "_id": "$MAP.paymail",
+          "paymail": {
+            "$first": "$MAP.paymail"
+          },
+          "last_message": {
+            "$last": "$B.content"
+          },
+          "last_message_time": {
+            "$last": "$timestamp"
+          },
+          "messages": {
+            "$sum": 1
+          }
+        }
+      }
+    ],
+    "sort": {
+      "messages": -1
+    },
+    "limit": 20
   }
 }
 
@@ -30,8 +156,11 @@ var balance
 
 var audio = new Audio("https://bitchat.allaboardbitcoin.com/audio/notify.mp3")
 
+
 var queryChannelsB64 = btoa(JSON.stringify(queryChannels))
 var queryChannelsUrl = 'https://b.map.sv/q/'+queryChannelsB64
+var queryLeaderboardB64 = btoa(JSON.stringify(queryLeaderboard))
+var queryLeaderboardUrl = 'https://b.map.sv/q/'+queryLeaderboardB64
 var bitsocket
 
 // music player
@@ -40,19 +169,20 @@ var collection = []
 // channels
 var channels = []
 var verboseMode = false
+var disableCussjar = false
 
 // Load audio
 audio.load()
 
-// get window query params, set channel context if needed
-const searchParams = new URLSearchParams(window.location.search);
 
 // template
 document.addEventListener("DOMContentLoaded", function(e) {
   audio.volume = 0.25
   const initMuted = localStorage.getItem('bitchat.muted')
   const initVerbose = localStorage.getItem('bitchat.verbose')
+  const initCussJar = localStorage.getItem('bitchat.disable-cussjar')
   verboseMode = initVerbose === 'true'
+  disableCussjar = initCussJar === 'true'
   audio.muted = initMuted === 'true'
   var paymail = localStorage.getItem('bitchat.paymail')
 
@@ -60,7 +190,6 @@ document.addEventListener("DOMContentLoaded", function(e) {
   var query_url = 'https://b.map.sv/q/'+query_b64
   var sock_b64 = btoa(JSON.stringify(sock(verboseMode)))
   var socket_url = 'https://b.map.sv/s/'+sock_b64
-
 
   document.querySelector("form").addEventListener("submit", async function(e) {
     e.preventDefault()
@@ -75,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
         chat.value = ""
         refill()
         return
-      } else if (message.toLowerCase() === '/credits') {
+      } else if (message.toLowerCase() === '/credits' || message.toLowerCase() === 'credits') {
         let html = "<br><div>CREDITS</div><br>"
         // html += "<div>Funded via Faucet Bot API from <a href='https://allaboardbitcoin.com'>AllAboard.cash</a>.</div>"
         html += "<div>Powered by <a href='https://b.map.sv'>b.map.sv</a>, <a href='https://bitcoinschema.org'>BitcoinSchema.org</a>, <a href='https://allaboardbitcoin.com'>AllAboardBitcoin.com</a>, <a href='https://junglebus.gorillapool.io'>JungleBus</a> & the Bitcoin SV Blockchain.</div>"
@@ -85,16 +214,34 @@ document.addEventListener("DOMContentLoaded", function(e) {
         document.querySelector(".container").appendChild(row)
         chat.value = ""
         return
-      } else if (message.toLowerCase().startsWith('/play')) {
+      } else if (message.toLowerCase() === '/cussjar' || message.toLowerCase() === 'cussjar') {
 
-        // play random songs from your NFT collection
+        localStorage.setItem('bitchat.disable-cussjar', !disableCussjar ? 'true' : 'false')
+        let html = `<br><div>CUSS JAR ${ !disableCussjar ? 'DISABLED' : 'ACTIVE'}</div><br>`
 
-        // get the collection
+        disableCussjar = !disableCussjar
 
-        // group them by origin
-
+        let row = document.createElement("div")
+        row.className = "refill"
+        row.innerHTML = html
+        document.querySelector(".container").appendChild(row)
+        chat.value = ""
+        document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
+        
+        if (!audio.muted) {
+          audio.play()
+        }
         return
-      } else if (message.toLowerCase() === '/back' || message.toLowerCase() === 'cd ..') {
+        // } else if (message.toLowerCase().startsWith('/play') || message.toLowerCase() === 'play') {
+          
+          //   // play random songs from your NFT collection
+          
+          //   // get the collection
+          
+          //   // group them by origin
+          
+          //   return
+        } else if (message.toLowerCase() === '/back' || message.toLowerCase() === 'back' || message.toLowerCase() === 'cd ..') {
         window.location.href = 'https://bitchat.allaboardbitcoin.com'
         return
       } else if (message.toLowerCase().startsWith('/join ') || message.toLowerCase().startsWith('/j ') || message.toLowerCase().startsWith('cd ')) {
@@ -109,7 +256,33 @@ document.addEventListener("DOMContentLoaded", function(e) {
           window.location.href = 'https://bitchat.allaboardbitcoin.com/?c=' + channel.replace('#', '')
         }
         return
-      } else if (message.toLowerCase() === 'ls' || message.toLowerCase() === 'dir' ||message.toLowerCase() === '/list' || message.toLowerCase() === '/channels') {
+      } else if (message.toLowerCase() === 'lb' || message.toLowerCase() === '/leaderboard' || message.toLowerCase() === '/lb'  || message === 'leaderboard') {
+        
+        let html = `<br><div>LEADERBOARD${!searchParams.has('c') ? ' - GLOBAL CHAT' : ' - #' + searchParams.get('c').replace('#', '')}</div><br>`
+        let row = document.createElement("div")
+        fetch(queryLeaderboardUrl).then(function(res) {
+          return res.json()
+        }).then((res) => {
+         
+          res.c.forEach(function (c) {
+            if (c.paymail) {
+              html += `<div>${c.paymail} (${c.messages})</div>\n`
+            }
+          })
+          
+          row.className = "refill"
+          row.innerHTML = html
+          document.querySelector(".container").appendChild(row)
+          chat.value = ""
+          if (!audio.muted) {
+            audio.play()
+          }
+          
+          document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
+        })
+        
+        return
+      } else if (message.toLowerCase() === 'ls' || message.toLowerCase() === 'dir' || message.toLowerCase() === '/list' || message.toLowerCase() === '/channels' || message.toLowerCase() === 'list') {
 
         let html = "<br><div>CHANNELS</div><br>"
         let row = document.createElement("div")
@@ -136,7 +309,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
         })
         
         return
-      } else if (message.toLowerCase() === '/mute') {
+      } else if (message.toLowerCase() === '/mute' || message.toLowerCase() === 'mute') {
         localStorage.setItem('bitchat.muted', !audio.muted ? 'true' : 'false')
         let html = `<br><div>AUDIO ${ audio.muted ? 'UNMUTED' : 'MUTED'}</div><br>`
 
@@ -153,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
           audio.play()
         }
         return
-      } else if (message.toLowerCase() === '/v' || message.toLowerCase() === '/verbose') {
+      } else if (message.toLowerCase() === '/v' || message.toLowerCase() === '/verbose' || message.toLowerCase() === 'verbose') {
         localStorage.setItem('bitchat.verbose', !verboseMode ? 'true' : 'false')
         let html = `<br><div>VERBOSE MODE ${ !verboseMode ? 'ON' : 'OFF'}</div><br>`
         
@@ -171,7 +344,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
         }
         window.location.reload(true, query_url)
         return
-      } else if (message.toLowerCase() === '/help') {
+      } else if (message.toLowerCase() === '/help' || message.toLowerCase() === 'help') {
         let html = helpHTML()
         let row = document.createElement("div")
         row.className = "refill"
@@ -181,7 +354,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
         document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
         
         return
-      } else if (message.toLowerCase() === '/logout') {
+      } else if (message.toLowerCase() === '/logout' || message.toLowerCase() === 'logout') {
         localStorage.removeItem('bitchat.paymail')
         // TODO: log out of relay (doesn't work) - relay doesn't support this endpoint
         // var win = window.open('http://relayx.com/logout','_blank','width=800,height=600,status=0,toolbar=0');
@@ -207,7 +380,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
       var i = document.querySelector("#chat")
       i.setAttribute("placeholder", "Posting...")
       i.setAttribute("readonly", "readonly")
-
+      
       try {
         let dataPayload = [
           B_PREFIX, // B Prefix
@@ -227,19 +400,31 @@ document.addEventListener("DOMContentLoaded", function(e) {
         if (searchParams.has('c')) {
           dataPayload.push('context', 'channel', 'channel', searchParams.get('c'))
         }
-
-        chat.value = ""
+        
         const script = nimble.Script.fromASM(
           // dataPayload.map((d) => bops.from(d, 'utf8')))
           'OP_0 OP_RETURN ' + dataPayload.map((str) => bops.to(bops.from(str, 'utf8'), 'hex')).join(' ')
-        );
-        let resp = await relayone.send({
-          outputs: [{script: script.toASM(), amount: 0, currency: 'BSV'}]
-        })
-
-        console.log("Sent", resp)
+          );
+          let outputs = [{script: script.toASM(), amount: 0, currency: 'BSV'}]
+          
+          if (!disableCussjar && hasCuss(chat.value)) {
+            if(confirm(`Toss a few sats in the cuss jar to post?`) === true) {
+              outputs.push({to: 'satchmo@relayx.io', amount: 0.0002, currency: 'BSV'})
+            } else {
+              console.error('user denied')
+              i.removeAttribute("readonly")
+              i.setAttribute("placeholder", "")
+              return
+            }
+          }
+          console.log('hasCuss?', hasCuss(chat.value))
+          chat.value = ""
+          
+          let resp = await relayone.send({outputs})
+          
+          console.log("Sent", resp)
           let txid = resp.txid
-
+          
           i.removeAttribute('readonly')
           i.removeAttribute('placeholder')
         } catch (e) {
@@ -414,17 +599,30 @@ var reload = function(template, query_url) {
     res.c = [...res.c.filter((c) => c.MAP.type === 'message' || verboseMode).sort((a, b) => a.blk.t > b.blk.t ? -1 : 1)]
     welcome(res, template)
     document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
+  }).catch((e) => {
+    console.error('Connection failed', e)
+    // welcome({ c: [] }, template)
+    let row = document.createElement('div')
+    row.className = "error"
+    row.innerHTML = "<div>Glitch in the Matrix detected. New posts may be delayed.</div>";
+    document.querySelector(".container").appendChild(row)
+    // document.querySelector('.container').scrollTop = document.querySelector('.container').scrollHeight
   })
 }
 
 var helpHTML = function() {
   var text = "<br><br><div>COMMANDS</div><br>"
-  text += "<div>/logout - switch your paymail.</div>"
-  text += "<div>/credits - demo application credits.</div>"
-  text += "<div>/mute - toggle the chat sound on/off</div>"
+
+  text += "<div>Channels:</div>"
   text += "<div>/list - list available channels</div>"
   text += "<div>/join #channel - joins a channel by name</div>"
-  text += "<div>/back - returns to global channel</div>"
+  text += "<div>/back - returns from a channel</div><br /><br />"
+  text += "<div>Other Commands:</div>"
+  text += "<div>/credits - demo application credits.</div>"
+  text += "<div>/cussjar - toggle cuss word fee</div>"
+  text += "<div>/leaderboard - shows top posters</div>"
+  text += "<div>/logout - switch your paymail.</div>"
+  text += "<div>/mute - toggle the chat sound on/off</div>"
   text += "<div>/verbose - toggle verbose mode (show posts)</div>"
   return text + "<div>/help - this message.<br><br><br>"
 }
@@ -469,4 +667,10 @@ const sock = (verbose) => {
     q.q.find['MAP.channel'] = { '$exists': false }
   }
   return q
+}
+
+// var rgx = new RegExp(`${cussWords.map(c => { return '^' + RegExp.quote(c) + '$' }).join("|")}`, "gi")
+const hasCuss = (str) => {
+//     return !!str.match(rgx);           
+  return cussWords.some((v) => { return str.replace("\"","").split(/['?, '+]/).map(w => w.toLowerCase()).indexOf(v.toLowerCase()) >= 0 })
 }

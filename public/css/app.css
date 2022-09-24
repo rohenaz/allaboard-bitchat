@@ -133,6 +133,10 @@ i.fa-bitcoin {
     transition: all .3s linear;
     background: rgba(0,255,0, 0.5);
 }
+.error {
+    color: rgb(255, 149, 165)
+}
+
 .refill > * {
     margin-bottom: 10px;
 }
