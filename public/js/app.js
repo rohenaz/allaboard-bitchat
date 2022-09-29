@@ -791,6 +791,7 @@ var helpHTML = function () {
   text += "<div>/leaderboard - shows top posters</div>";
   text += "<div>/logout - switch your paymail.</div>";
   text += "<div>/mute - toggle the chat sound on/off</div>";
+  text += "<div>/pay paymail@domain.com $0.10 - pay a person</div>";
   text += "<div>/verbose - toggle verbose mode (show posts)</div>";
   return text + "<div>/help - this message.<br><br><br>";
 };
